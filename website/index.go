@@ -1,31 +1,41 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 )
 
+// create stucture เก็บข้อมูล
+type Product struct {
+	Name  string
+	Price int
+}
+
 func main() {
-	// HandleFunc ถ้ามีการส่ง request มาจะให้ไปทำงานที่ function ไหน
-	// w คือ ค่าที่ส่งมา Response
-	// r คือ ส่งค่ากลับ request
-	// หน้าแรก "/" แสดงคำว่า Hello My website
+	// สร้างตัวแปร var ให้เก็บค่า template ไปแสดงยัง index
+	var templates = template.Must(template.ParseFiles("index.html"))
+	// แสดงหน้าแรก
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// ต้องใส่ w เมื่อเป็นการ response
-		fmt.Fprintf(w, "Hello My website")
-
+		// ตัวแปร myProduct รับข้อมูลมาจาก Product struct
+		myProduct := Product{"นมสด", 500}
+		// การใช้งาน template
+		templates.ExecuteTemplate(w, "index.html", myProduct)
 	})
-	// หน้า /product จะไปเรียกใช้ funs product
-	http.HandleFunc("/product", product)
-	// หน้า /user จะไปเรียกใช้ funs user
-	http.HandleFunc("/user", user)
 
+	// แสดงหน้า login
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "login.html")
+	})
+	// แสดงหน้า signup
+	http.HandleFunc("/signup", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "signup.html")
+	})
+
+	// แสดงไฟล์ txt ในหน้าเว็บ
+	http.HandleFunc("/file", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "file.txt")
+	})
+
+	// port 8080
 	http.ListenAndServe(":8080", nil)
-
-}
-func product(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Product Resquest")
-}
-func user(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "User Request")
 }
