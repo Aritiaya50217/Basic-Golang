@@ -15,7 +15,7 @@ func main() {
 	// สร้างตัวแปร var ให้เก็บค่า template ไปแสดงยัง index
 	var templates = template.Must(template.ParseFiles("index.html"))
 	// แสดงหน้าแรก
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/index", func(w http.ResponseWriter, r *http.Request) {
 		// ตัวแปร myProduct รับข้อมูลมาจาก Product struct
 		myProduct := Product{"นมสด", 500}
 		// การใช้งาน template
